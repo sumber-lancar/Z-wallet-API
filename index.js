@@ -47,6 +47,8 @@ app.use(logger("dev"))
 app.use(express.urlencoded({
     extended: false
 }))
+// allowed to upload file with multer
+app.use(express.static("public"));
 
 // parser untuk raw json
 app.use(express.json())
