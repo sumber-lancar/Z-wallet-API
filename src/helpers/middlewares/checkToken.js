@@ -85,22 +85,6 @@ module.exports = {
       })
     }
   },
-<<<<<<< HEAD
-  // isSeller: (req, res, next) => {
-  //   const { level } = req.decodedToken
-  //   if (level != 2) {
-  //     form.error(res,
-  //       {
-  //         status: 401,
-  //         msg: `Unauthorized Access`,
-  //         details: `Yout dont have permission to access this page.`
-  //       }
-  //     )
-  //   } else {
-  //     next()
-  //   }
-  // }
-=======
   isSeller: (req, res, next) => {
     const { level } = req.decodedToken
     if (level != 2) {
@@ -169,7 +153,7 @@ module.exports = {
             } else {
               reject({
                 status: 404,
-                message: `Token tidak teridentifikasi`
+                message: `PIN tidak teridentifikasi`
               })
             }
           } else {
@@ -186,5 +170,4 @@ module.exports = {
       })
     }
   }
->>>>>>> agung-auth
 }
