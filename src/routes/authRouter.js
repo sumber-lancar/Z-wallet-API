@@ -14,7 +14,7 @@ authRouter.patch('/change-password', authController.changePassword) //change old
 authRouter.post("/logout",verifyToken.isLogin, authController.logout)
 
 authRouter.patch('/setPIN',verifyToken.isLogin, authController.SetPIN)
-
+authRouter.get('/check-pin/:PIN', verifyToken.isLogin, authController.CheckPIN)
 
 
 module.exports = authRouter

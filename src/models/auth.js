@@ -225,7 +225,7 @@ module.exports = {
     postLogin: (body) => {
         return new Promise((resolve, reject) => {
             const { email, password } = body
-            const queryStr = `SELECT id, CONCAT(firstName, ' ', lastName) as fullName, email, password, pin, photo, phone,balance, isActive FROM users WHERE email = ?`
+            const queryStr = `SELECT u.id, CONCAT(u.firstName,' ', u.lastName) as fullname, u.email, u.password, u.pin, u.photo, u.phone, b.balance, u.isActive FROM users u JOIN balance b ON b.id_user = u.id WHERE u.email = ?`
             db.query(queryStr, email, (err, data) => {
                 if (err) {
                     reject({
@@ -263,9 +263,11 @@ module.exports = {
                             } else {
                                 //sign result to payload jwt
                                 const payload = {
-                                    user_id: data[0].id,
+                                    id: data[0].id,
                                     email,
                                     fullname: data[0].fullname,
+                                    balance: data[0].balance,
+                                    photo: data[0].photo
                                 }
                                 const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '24h' })
                                 if (data[0].pin == null) {
@@ -527,7 +529,7 @@ module.exports = {
             })
         })
     },
-    authSetPIN: (email, pin) => {
+    setPIN: (email, pin) => {
         return new Promise((resolve, reject) => {
             const queryStr = `UPDATE users SET pin = ? WHERE email = ?`
             db.query(queryStr, [pin, email], (err, data) => {
@@ -540,6 +542,37 @@ module.exports = {
                     reject({
                         status: 500,
                         message: err
+                    })
+                }
+            })
+        })
+    },
+    checkPIN: (email, PIN) => {
+        console.log(email,PIN)
+        return new Promise((resolve, reject) => {
+            const queryStr = `SELECT * FROM users WHERE email = ? AND pin = ?`
+            console.log(queryStr)
+            db.query(queryStr, [email, PIN], (err, data) => {
+                if (!err) {
+                    console.log('a')
+                    if (data.length > 0) {
+                        console.log('b')
+                        resolve({
+                            status: 200,
+                            message: `Otentikasi PIN berhasil`
+                        })
+                    } else {
+                        console.log('c')
+                        reject({
+                            status: 404,
+                            message: `PIN salah`
+                        })
+                    }
+                } else {
+                    console.log('d')
+                    reject({
+                        status: 500,
+                        details: err
                     })
                 }
             })
