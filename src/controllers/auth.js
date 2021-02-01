@@ -34,10 +34,7 @@ module.exports = {
         console.log(body)
         authModel.postLogin(body)
             .then((result) => {
-                res.status(200).json({
-                    message:`sukses`,
-                    result
-                })
+                res.status(200).json(result)
             }).catch((error) => {
                 res.status(error.status).json(error)
             })
@@ -100,7 +97,17 @@ module.exports = {
     SetPIN: (req, res) => {
         const { email } = req.decodedToken
         const { PIN } = req.body
-        authModel.authSetPIN(email, PIN)
+        authModel.setPIN(email, PIN)
+            .then((result) => {
+                res.status(result.status).json(result)
+            }).catch((error) => {
+                res.status(error.status).json(error)
+            })
+    },
+    CheckPIN: (req, res) => {
+        const { email } = req.decodedToken
+        const { PIN } = req.params
+        authModel.checkPIN(email, PIN)
             .then((result) => {
                 res.status(result.status).json(result)
             }).catch((error) => {

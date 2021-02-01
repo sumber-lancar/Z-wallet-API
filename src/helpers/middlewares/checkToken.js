@@ -22,7 +22,7 @@ module.exports = {
         } else {
           reject({
             msg: `SQLquery ERROR!`,
-            details:err
+            details: err
           })
         }
       })
@@ -85,6 +85,7 @@ module.exports = {
       })
     }
   },
+<<<<<<< HEAD
   // isSeller: (req, res, next) => {
   //   const { level } = req.decodedToken
   //   if (level != 2) {
@@ -99,4 +100,91 @@ module.exports = {
   //     next()
   //   }
   // }
+=======
+  isSeller: (req, res, next) => {
+    const { level } = req.decodedToken
+    if (level != 2) {
+      form.error(res,
+        {
+          status: 401,
+          msg: `Unauthorized Access`,
+          details: `Yout dont have permission to access this page.`
+        }
+      )
+    } else {
+      next()
+    }
+  },
+  phoneUsed: (req, res, next) => {
+    const { phone } = req.body
+    if (phone != undefined) {
+      const checkAvailable = new Promise((resolve, reject) => {
+        const queryStr = `SELECT phone FROM users WHERE phone = ?`
+        db.query(queryStr, phone, (err, data) => {
+          if (!err) {
+            if (data.length > 0) {
+              reject({
+                status: 401,
+                message: `No. HP sudah digunakan`
+              })
+            } else {
+              resolve({
+                status: 200
+              })
+            }
+          } else {
+            reject({
+              status: 500,
+              message: `INTERNAL SERVER ERROR`,
+              details: err
+            })
+          }
+        })
+      }).then((result) => {
+        next()
+      }).catch((error) => {
+        res.status(error.status).json(error)
+      })
+    } else {
+      next()
+    }
+  },
+  isPIN: (req, res, next) => {
+    const email = req.decodedToken.email
+    const PIN = req.header("x-access-PIN")
+    if (!PIN) {
+      res.status(401).json({
+        status: 401,
+        message: `invalid PIN`
+      })
+    } else {
+      const checkPIN = new Promise((resolve, reject) => {
+        const queryStr = `SELECT * FROM users WHERE email = ? AND pin = ?`
+        db.query(queryStr, [email, PIN], (err, data) => {
+          if (!err) {
+            if (data.length > 0) {
+              resolve({
+                status: 200
+              })
+            } else {
+              reject({
+                status: 404,
+                message: `Token tidak teridentifikasi`
+              })
+            }
+          } else {
+            reject({
+              status: 500,
+              message: err
+            })
+          }
+        })
+      }).then((result) => {
+        next()
+      }).catch((error) => {
+        res.status(error.status).json(error)
+      })
+    }
+  }
+>>>>>>> agung-auth
 }
