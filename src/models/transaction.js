@@ -36,7 +36,7 @@ module.exports = {
         }
         return new Promise((resolve, reject) => {
             const queryStr =
-                `SELECT t.id,t.sender, CONCAT(u.firstname,' ',u.lastname) as sender, t.receiver, CONCAT(us.firstname,' ', us.lastname) as receiver, t.amount,t.notes, t.type, t.created_at
+                `SELECT t.id,t.sender, CONCAT(u.firstname,' ',u.lastname) as sender, t.receiver, CONCAT(us.firstname,' ', us.lastname) as receiver, us.photo, t.amount,t.notes, t.type, t.created_at
             FROM transfer t
             JOIN users u ON u.id = t.sender
             JOIN users us ON us.id = t.receiver

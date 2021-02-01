@@ -10,71 +10,84 @@ module.exports = {
             const saltRounds = Math.floor(Math.random() * 10) + 1
             //hashPw
             bcrypt.hash(body.password, saltRounds, (err, hashedPassword) => {
-                //generate newBody from newPw
                 const newUser = { ...body, password: hashedPassword }
                 const queryStr = `INSERT INTO users SET ?`
                 db.query(queryStr, newUser, (err, data) => {
                     if (!err) {
-                        const otpCode = otp.generate(6, { alphabets: true, upperCase: true, specialChars: false })
-                        const OTPsend = {
-                            email: body.email,
-                            otp: otpCode
+                        const newBalance = {
+                            id_user: data.insertId,
+                            balance: 0
                         }
-                        const queryStr = `INSERT INTO tb_otp_activation SET ?`
-                        db.query(queryStr, OTPsend, (err, data) => {
+                        const insertBalance = `INSERT INTO balance SET ?`
+                        db.query(insertBalance, newBalance, (err, data) => {
                             if (!err) {
-                                let transporter = nodemailer.createTransport({
-                                    service: 'gmail',
-                                    host: 'smtp.gmail.com',
-                                    port: 578,
-                                    secure: false,
-                                    auth: {
-                                        user: process.env.USER_EMAIL,
-                                        pass: process.env.PASS_EMAIL
-                                    }
-                                })
-                                // console.log(process.env.USER_EMAIL, process.env.PASS_EMAIL)
-
-                                let mailOptions = {
-                                    from: "ZWallet Team <zwalleta@mail.com>",
-                                    to: body.email,
-                                    subject: 'OTP Code Activation Account',
-                                    html:
-                                        ` 
+                                const otpCode = otp.generate(6, { alphabets: true, upperCase: true, specialChars: false })
+                                const OTPsend = {
+                                    email: body.email,
+                                    otp: otpCode
+                                }
+                                const queryStr = `INSERT INTO tb_otp_activation SET ?`
+                                db.query(queryStr, OTPsend, (err, data) => {
+                                    if (!err) {
+                                        let transporter = nodemailer.createTransport({
+                                            service: 'gmail',
+                                            host: 'smtp.gmail.com',
+                                            port: 578,
+                                            secure: false,
+                                            auth: {
+                                                user: process.env.USER_EMAIL,
+                                                pass: process.env.PASS_EMAIL
+                                            }
+                                        })
+                                        let mailOptions = {
+                                            from: "ZWallet Team <zwalleta@mail.com>",
+                                            to: body.email,
+                                            subject: 'OTP Code Activation Account',
+                                            html:
+                                                ` 
                                                 <h1> OTP CODE from ZWallet Team </h1>
                                                 <p> Hello, this is you OTP code</p> 
                                                 <br></br>
                                                 <h3>${otpCode}<h3> 
                                                 <p> Use it to Activate Account </p>
                                                 `
-                                }
-                                transporter.sendMail(mailOptions, (err, data) => {
-                                    if (err) {
-                                        console.log("Its Error: ", err);
+                                        }
+                                        transporter.sendMail(mailOptions, (err, data) => {
+                                            if (err) {
+                                                console.log("Its Error: ", err);
+                                            } else {
+                                                console.log(`Sent to ${body.email} Success!!!!`);
+                                                resolve({
+                                                    status: 200,
+                                                    message: `Kode OTP telah dikirim ke email anda`
+                                                })
+                                            }
+                                        })
+
                                     } else {
-                                        console.log(`Sent to ${body.email} Success!!!!`);
-                                        resolve({
-                                            status: 200,
-                                            message: `Kode OTP telah dikirim ke email anda`
+                                        reject({
+                                            status: 500,
+                                            message: `Internal server error`,
+                                            details: err
                                         })
                                     }
                                 })
 
                             } else {
                                 reject({
-                                    status: 500,
-                                    message: `Internal server error`,
+                                    msg: `ERROR!`,
                                     details: err
                                 })
                             }
                         })
                     } else {
                         reject({
-                            msg: `ERROR!`,
+                            status: 500,
+                            message: `Internal server error`,
                             details: err
                         })
                     }
-                })
+                }) 
             })
         })
     },
@@ -270,19 +283,19 @@ module.exports = {
                                     photo: data[0].photo
                                 }
                                 const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '24h' })
-                                if (data[0].pin == null) {
+                                if (data[0].pin == ' ') {
                                     resolve({
                                         status: 206,
                                         msg: 'Harap atur pin anda',
-                                        data: { ...payload,token}
+                                        data: { token }
                                     })
                                 } else {
                                     resolve({
                                         status: 200,
                                         message: 'Login Berhasil',
-                                        data: { ...payload,token }
+                                        data: { ...payload, token }
                                     })
-                                }      
+                                }
                             }
 
                         })
@@ -487,10 +500,10 @@ module.exports = {
                                                     status: 200,
                                                     message: `Change Password , berhasil`
                                                 })
-                                            }else{
+                                            } else {
                                                 reject({
-                                                    status:500,
-                                                    message:errorUpdate
+                                                    status: 500,
+                                                    message: errorUpdate
                                                 })
                                             }
                                         })
@@ -504,10 +517,10 @@ module.exports = {
                             message: `data tidak ditemukan`
                         })
                     }
-                }else{
+                } else {
                     reject({
-                        status:500,
-                        message:err
+                        status: 500,
+                        message: err
                     })
                 }
             })
@@ -548,7 +561,7 @@ module.exports = {
         })
     },
     checkPIN: (email, PIN) => {
-        console.log(email,PIN)
+        console.log(email, PIN)
         return new Promise((resolve, reject) => {
             const queryStr = `SELECT * FROM users WHERE email = ? AND pin = ?`
             console.log(queryStr)
