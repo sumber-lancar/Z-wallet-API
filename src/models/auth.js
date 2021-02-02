@@ -280,7 +280,8 @@ module.exports = {
                                     email,
                                     fullname: data[0].fullname,
                                     balance: data[0].balance,
-                                    photo: data[0].photo
+                                    phone: data[0].phone,
+                                    photo: data[0].photo,
                                 }
                                 const token = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '24h' })
                                 if (data[0].pin == ' ') {
