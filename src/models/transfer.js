@@ -83,7 +83,7 @@ module.exports = {
     },
     searchReceiver: (name, id) => {
         return new Promise((resolve, reject) => {
-            const queryStr = `SELECT id, CONCAT(firstname,' ',lastname) as name, phone, photo FROM users WHERE CONCAT(firstname, lastname) LIKE '%${name}%' AND NOT id = ${id}`
+            const queryStr = `SELECT id, CONCAT(firstname,' ',lastname) as name, phone, photo FROM users WHERE CONCAT(firstname, lastname) LIKE '%${name}%' AND NOT id = ${id} AND isActive = 1`
             db.query(queryStr,(err, data) => {
                 if (!err) {
                     if (data.length > 0) {
