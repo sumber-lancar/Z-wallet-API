@@ -1,61 +1,89 @@
-const db = require("../config/mySQL");
-const bcrypt = require("bcrypt");
+const db = require('../config/mySQL')
+const bcrypt = require('bcrypt')
+const { query } = require('express')
 
 module.exports = {
-  getDataUser: (req) => {
-    const { id } = req.params;
-    return new Promise((resolve, reject) => {
-      const queryStr = "SELECT id, CONCAT(firstName, ' ', lastName) as fullName, email, pin, photo, phone,balance, isActive FROM users WHERE id = ?";
-      db.query(queryStr, id, (err, data) => {
-        console.log(id);
-
-        if (!err) {
-          resolve(data);
-        } else {
-          reject(err);
-        }
-      });
-    });
-  },
-
-  userUpdate: (id, setUpdate) => {
-    console.log(setUpdate);
-    return new Promise((resolve, reject) => {
-      const queryStr = "UPDATE users SET " + setUpdate + "WHERE id = ?";
-      db.query(queryStr, id, (err, data) => {
-        if (!err) {
-          resolve(data);
-        } else {
-          reject(err);
-        }
-      });
-    });
-  },
-};
-// createPinUser: (body) => {
-//   return new Promise((resolve, reject) => {
-//     let saltRounds = 10;
-//     bcrypt.genSalt(saltRounds, (err, salt) => {
-//       if (err) {
-//         reject(err);
-//       }
-//       bcrypt.hash(body.pin_user, salt, (err, hashedPin) => {
-//         if (err) {
-//           reject(err);
-//         }
-//         const newBody = {
-//           ...body,
-//           pin_user: hashedPin,
-//         };
-//         const queryStr = "INSERT INTO users SET pin_user = ? WHERE id_user = ?";
-//         db.query(queryStr, newBody, (err, data) => {
-//           if (!err) {
-//             resolve(data);
-//           } else {
-//             reject(err);
-//           }
-//         });
-//       });
-//     });
-//   });
-// },
+    getSingleUser: (id) => {
+        return new Promise((resolve, reject) => {
+            const queryStr = `SELECT CONCAT(firstname,' ',lastname) as name, phone, photo FROM users WHERE id = ?`
+            db.query(queryStr, id, (err, data) => {
+                if (!err) {
+                    resolve({
+                        status: 200,
+                        data: data[0]
+                    })
+                } else {
+                    reject({
+                        status: 500,
+                        message: err
+                    })
+                }
+            })
+        })
+    },
+    userChangeInfo: (body, id) => { //includes all userData (PIN, PhoneNumber, and etc.)
+        return new Promise((resolve, reject) => {
+            const queryStr = `UPDATE users SET ? WHERE id = ?`
+            db.query(queryStr, [body, id], (err, data) => {
+                if (!err) {
+                    resolve({
+                        status: 200,
+                        message: `Data berhasil diubah`,
+                        data: body
+                    })
+                } else {
+                    reject({
+                        status: 500,
+                        message: err
+                    })
+                }
+            })
+        })
+    },
+    getOldPhoto: (id) => {
+        return new Promise((resolve, reject) => {
+            const queryStr = `SELECT photo FROM users WHERE id = ?`
+            db.query(queryStr, id, (err, data) => {
+                if (!err) {
+                    if (data.length > 0) {
+                        resolve({
+                            status: 200,
+                            image: data[0].image
+                        })
+                    } else {
+                        reject({
+                            status: 404,
+                            image: ''
+                        })
+                    }
+                } else {
+                    reject({
+                        status: 500,
+                        message: 'Internal server error',
+                        details: err
+                    })
+                }
+            })
+        })
+    },
+    updatePhoto: (image, id) => {
+        return new Promise((resolve, reject) => {
+            const queryStr = `UPDATE users SET photo = ? WHERE id = ?`
+            db.query(queryStr, [image, id], (err, data) => {
+                if (!err) {
+                    resolve({
+                        status: 200,
+                        message: 'Berhasil mengubah photo profil'
+                    })
+                } else {
+                    console.log(err)
+                    reject({
+                        status: 500,
+                        message: 'internal server error',
+                        details: err
+                    })
+                }
+            })
+        })
+    }
+}

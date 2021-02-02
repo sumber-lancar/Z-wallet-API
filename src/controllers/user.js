@@ -1,86 +1,51 @@
-const userModel = require("../models/user");
-const form = require("../helpers/form");
-// const { raw } = require("mysql");
+const userModel = require('../models/user')
+const fs = require('fs')
 
 module.exports = {
-  getUserData: (req, res) => {
-    userModel
-      .getDataUser(req)
-      .then((data) => {
-        if (data.length) {
-          res.json({
-            status:200,
-            data,
-          });
-        } else {
-          res.status(404).json({
-            msg: "User Not Found",
-          });
-        }
+  getSingleUser: (req, res) => {
+    const { id } = req.params
+    userModel.getSingleUser(id)
+      .then((result) => {
+        res.status(result.status).json(result)
+      }).catch((error) => {
+        res.status(error.status).json(error)
       })
-      .catch((err) => {
-        res.json(err);
-      });
   },
-  userUpdate: (req, res) => {
-    let photo = null;
-    let SERVER = "http://localhost:8000"
-    if (req.files.img) {
-      photo = JSON.stringify(
-        req.files.img.map((e) => SERVER + "/images/" + e.filename)
-      );
-    }
-    console.log(photo);
-    const { body } = req;
-    const { id } = req.params;
-
-    // set for update
-    const entry = Object.entries(body);
-
-    let rawSetUpdated = "";
-
-    if (req.files.img && req.files.img.length !== 0) {
-      console.log("true");
-      rawSetUpdated += `photo = '${photo}',`;
-    }
-    entry.forEach((entry) => {
-      let key = entry[0];
-      let value = entry[1];
-      rawSetUpdated += `${key} = '${value}' ,`;
-    });
-    const setUpdate = rawSetUpdated.slice(0, -2) + " ";
-    console.log(setUpdate);
-    userModel
-      .userUpdate(id, setUpdate)
-      .then((data) => {
-        res.status(200).json({
-          msg: "Data Successfully Updated",
-          data: body,
-          photo,
-        });
+  ChangePersonalInfo: (req, res) => {
+    const { body } = req
+    console.log(req)
+    const { id } = req.decodedToken
+    userModel.userChangeInfo(body, id)
+      .then((result) => {
+        res.status(result.status).json(result)
+      }).catch((error) => {
+        res.status(error.status).json(error)
       })
-      .catch((err) => {
-        res.json(err);
-      });
   },
-};
-
-//   createPinUser: (req, res) => {
-//     const { body } = req;
-//     userModel
-//       .createPin(body)
-//       .then((data) => {
-//         res.status(200).json({
-//           msg: "Pin Created Successfully",
-//           data,
-//         });
-//       })
-//       .catch((err) => {
-//         console.log(err);
-//         res.status(500).json({
-//           msg: "Internal Server Error",
-//           err,
-//         });
-//       });
-//   },
-// };
+  ChangePhotoProfile: (req, res) => {
+    const { id } = req.decodedToken
+    const image = req.filePath
+    userModel.getOldPhoto(id)
+      .then((result) => {
+        const imageToDelete = result.image
+        userModel.updatePhoto(image, id)
+          .then((result) => {
+            if (imageToDelete != '/images/default.jpg') {
+              fs.unlink(`public${imageToDelete}`, (err) => {
+                if (err) {
+                  console.log(err)
+                  return
+                } else {
+                  console.log(`public${image} deleted`)
+                }
+              })
+            }
+            res.status(result.status).json(result)
+          }).catch((error) => {
+            res.status(error.status).json(error)
+          })
+      }).catch((error) => {
+        res.status(error.status).json(error)
+      })
+  },
+}

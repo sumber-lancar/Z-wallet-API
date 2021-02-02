@@ -58,17 +58,17 @@ module.exports = {
             transactionModel.getInvoice(id, additionalQuery,'in'),
             transactionModel.getInvoice(id, additionalQuery,'out')
         ]).then((result) => {
-            let newTranfer = result[0].data.concat(result[1].data)
-            newTranfer = newTranfer.sort((a, b) => {
+            let newTransfer = result[0].data.concat(result[1].data)
+            newTransfer = newTransfer.sort((a, b) => {
                 return b.created_at - a.created_at
             })
-            newTranfer = newTranfer.filter((value, index) =>{
+            newTransfer = newTransfer.filter((value, index) =>{
                 return index < 7 
             })
             res.status(200).json({
                 status: 200,
                 message: `Berhasil menampilkan data`,
-                data: newTranfer
+                data: newTransfer
             })
         }).catch((error) => {
             res.status(error.status).json(error)

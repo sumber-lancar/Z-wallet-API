@@ -44,10 +44,8 @@ module.exports = {
       // Bearer Token
       // [Bearer, Token]
       const token = bearerToken.split(" ")[1]
-      console.log(token)
       const checkBlacklist = new Promise((resolve, reject) => {
         const queryStr = `SELECT token FROM blocklist_token WHERE token = ?`
-        console.log(queryStr)
         db.query(queryStr, token, (err, data) => {
           if (!err) {
             if (!data[0]) {
@@ -73,7 +71,6 @@ module.exports = {
           const decodedToken = jsonwebtoken.verify(result, process.env.SECRET_KEY)
           //asign decodedToken to req
           req.decodedToken = decodedToken
-          console.log(req.decodedToken)
           next() //meneruskan ke proses selanjutnya
         } catch (err) {
           res.json({
@@ -101,6 +98,7 @@ module.exports = {
   },
   phoneUsed: (req, res, next) => {
     const { phone } = req.body
+    console.log(req.body)
     if (phone != undefined) {
       const checkAvailable = new Promise((resolve, reject) => {
         const queryStr = `SELECT phone FROM users WHERE phone = ?`

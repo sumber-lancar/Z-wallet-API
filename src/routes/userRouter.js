@@ -1,15 +1,11 @@
 const express = require("express");
 const userController = require("../controllers/user");
 const userRouter = express.Router();
-const upload = require("../helpers/middlewares/multiUpload");
-// middleware checktoken
+const upload = require("../helpers/middlewares/upload");
 const verifyToken = require("../helpers/middlewares/checkToken");
 
-userRouter.get("/:id", verifyToken.isLogin, userController.getUserData);
-userRouter.patch(
-  "/:id",
-  upload,
-  userController.userUpdate
-);
+userRouter.get('/:id', verifyToken.isLogin, userController.getSingleUser)
+userRouter.patch('/changeInfo',verifyToken.isLogin, verifyToken.phoneUsed,userController.ChangePersonalInfo)
+userRouter.patch('/changePhoto', verifyToken.isLogin, upload, userController.ChangePhotoProfile)
 
 module.exports = userRouter;
