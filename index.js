@@ -22,14 +22,6 @@ io.on("connection", (socket) => {
   //   console.log(msg)
   //   io.to(id_recipient).to(id).emit("chat message", msg);
   // });
-<<<<<<< HEAD
-  socket.on('transfer', (amount,sender,recipient) =>{
-    console.log('sender = '+sender)
-    console.log('recipient = '+recipient)
-    console.log('amount = '+amount)
-    socket.to(sender).emit("tranfer", `Transaksi berhasil, saldo anda berkurang ${amount}`)
-    io.to(recipient).emit("tranfer", `${sender} mengirim dana sebesar ${amount}`)
-=======
   socket.on("transfer", (amount, sender, recipient) => {
     console.log("sender = " + sender);
     console.log("recipient = " + recipient);
@@ -50,7 +42,6 @@ io.on("connection", (socket) => {
     // socket
     //   .to(recipient)
     //   .emit("tranfer", `${sender} mengirim dana sebesar ${amount}`);
->>>>>>> 99dbec9d13ce0412344500ebb7da47116454f266
   });
 });
 
