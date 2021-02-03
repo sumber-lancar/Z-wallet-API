@@ -39,7 +39,7 @@ module.exports = {
         }
         return new Promise((resolve, reject) => {
             const queryStr =
-                `SELECT t.id, CONCAT(u.firstname,' ',u.lastname) as fullname, t.sender, t.receiver, u.photo, u.phone, t.amount,t.notes, t.type, t.created_at
+                `SELECT t.id, t.sender, t.receiver, CONCAT(u.firstname,' ',u.lastname) as fullname,  u.photo, u.phone, t.amount,t.notes, t.type, t.created_at
             FROM transfer t
             ${joinTable}
             WHERE ${user} = ? AND t.type = '${flow}'
