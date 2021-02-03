@@ -31,6 +31,7 @@ module.exports = {
         return new Promise((resolve, reject) => {
             const queryStr = `UPDATE balance SET balance = balance+${amount} WHERE id_user = ?`
             db.query(queryStr, id, (err, data) => {
+                console.log(err)
                 if (!err) {
                     resolve({
                         status: 200,
@@ -58,6 +59,7 @@ module.exports = {
             }
             const queryStr = `INSERT INTO transfer SET ?`
             db.query(queryStr, dataTranfer, (err, data) => {
+                console.log(err)
                 if (!err) {
                     resolve({
                         status: 200,
