@@ -13,7 +13,7 @@ module.exports = {
                     topupModel.insertTranfer(topupCenter, result.data, amount),
                     topupModel.topupBalance(result.data, amount)
                 ]).then((result) => {
-                    if(global.io.to(myId).emit("transfer in", 'Top Up Berhasil')){
+                    if(global.io.to(myId).emit("transfer in", `Top Up sebesar Rp.${amount} Berhasil`)){
                         console.log('sukses')
                     }
                     console.log(myId)
