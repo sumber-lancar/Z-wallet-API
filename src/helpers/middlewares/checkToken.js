@@ -104,7 +104,7 @@ module.exports = {
         const queryStr = `SELECT phone FROM users WHERE phone = ?`
         db.query(queryStr, phone, (err, data) => {
           if (!err) {
-            if (data.length > 0) {
+            if (data.length > 1) {
               reject({
                 status: 401,
                 message: `No. HP sudah digunakan`
