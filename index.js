@@ -27,12 +27,13 @@ io.on("connection", (socket) => {
     console.log("recipient = " + recipient);
     console.log("amount = " + amount);
     io.to(sender).emit(
-      "transfer",
+      "transfer out",
       `Transaksi berhasil, saldo anda berkurang ${amount}`
     );
     io.to(recipient).emit(
-      "transfer",
-      `${sender} mengirim dana sebesar ${amount}`
+      "transfer in",
+      `${sender} mengirim dana sebesar ${amount}`,
+      amount
     );
     //----
     // socket
