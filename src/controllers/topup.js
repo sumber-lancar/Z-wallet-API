@@ -15,15 +15,7 @@ module.exports = {
           topupModel.topupBalance(result.data, amount),
         ])
           .then((result) => {
-            if (
-              global.io
-                .to(myId)
-                .emit(
-                  "transfer in",
-                  `Top Up sebesar Rp.${amount} Berhasil`,
-                  amount
-                )
-            ) {
+            if (global.io.to(myId).emit("transfer in",`Top Up sebesar Rp.${amount} Berhasil`, amount)) {
               console.log("sukses");
             }
             console.log(myId);
