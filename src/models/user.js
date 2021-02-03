@@ -49,7 +49,7 @@ module.exports = {
           if (data.length > 0) {
             resolve({
               status: 200,
-              image: data[0].image,
+              image: data[0].photo,
             });
           } else {
             reject({
