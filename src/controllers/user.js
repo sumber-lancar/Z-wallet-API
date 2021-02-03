@@ -30,7 +30,7 @@ module.exports = {
         const imageToDelete = result.image
         userModel.updatePhoto(image, id)
           .then((result) => {
-            if (imageToDelete != '/images/default.jpg') {
+            if (imageToDelete != '/images/default.png') {
               fs.unlink(`public${imageToDelete}`, (err) => {
                 if (err) {
                   console.log(err)
@@ -40,7 +40,11 @@ module.exports = {
                 }
               })
             }
-            res.status(result.status).json(result)
+            let data = {}
+            data.image = image
+            res.status(result.status).json({
+              ...result, data
+            })
           }).catch((error) => {
             res.status(error.status).json(error)
           })
