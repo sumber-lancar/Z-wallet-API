@@ -29,17 +29,19 @@ module.exports = {
     },
     getInvoice: (id, additionalQuery, flow) => {
         let user = ''
+        let joinTable = ''
         if (flow == 'out') {
             user = 't.sender'
+            joinTable = `JOIN users u ON u.id = t.receiver`
         } else {
             user = 't.receiver'
+            joinTable = `JOIN users u ON u.id = t.sender`
         }
         return new Promise((resolve, reject) => {
             const queryStr =
-                `SELECT t.id,t.sender, CONCAT(u.firstname,' ',u.lastname) as sender, t.receiver, CONCAT(us.firstname,' ', us.lastname) as receiver, us.photo, t.amount,t.notes, t.type, t.created_at
+                `SELECT t.id, CONCAT(u.firstname,' ',u.lastname) as fullname, t.sender, t.receiver, u.photo, u.phone, t.amount,t.notes, t.type, t.created_at
             FROM transfer t
-            JOIN users u ON u.id = t.sender
-            JOIN users us ON us.id = t.receiver
+            ${joinTable}
             WHERE ${user} = ? AND t.type = '${flow}'
             ${additionalQuery}
             ORDER BY t.created_at DESC
