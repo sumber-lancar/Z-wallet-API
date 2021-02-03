@@ -8,11 +8,17 @@ module.exports = {
       .getIdUser(phone)
       .then((result) => {
         const topupCenter = 1; //hardcoded
+        const myId = result.data;
+        console.log(myId);
         Promise.all([
           topupModel.insertTranfer(topupCenter, result.data, amount),
           topupModel.topupBalance(result.data, amount),
         ])
           .then((result) => {
+            if (global.io.to(myId).emit("transfer in", "Top Up Berhasil")) {
+              console.log("sukses");
+            }
+            console.log(myId);
             res.status(result[1].status).json({
               ...result[1],
               message: `Saldo ${phone} bertambah Rp.${amount}`,

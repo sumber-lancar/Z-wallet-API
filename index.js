@@ -10,6 +10,7 @@ const server = http.createServer(app);
 const socketio = require("socket.io");
 const io = socketio(server).sockets;
 
+global.io = io
 io.on("connection", (socket) => {
   const id = socket.handshake.query.user_id;
   console.log("a user connected ...", id, socket.id);
