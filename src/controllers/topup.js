@@ -1,6 +1,7 @@
-const topupModel = require('../models/topup')
+const topupModel = require("../models/topup");
 
 module.exports = {
+<<<<<<< HEAD
     topupBalance: (req, res) => {
         let { phone, amount } = req.body
         phone = phone.toString().replace('23890', '+62')
@@ -29,3 +30,45 @@ module.exports = {
             })
     }
 }
+=======
+  topupBalance: (req, res) => {
+    let { phone, amount } = req.body;
+    phone = phone.toString().replace("23890", "+62");
+    topupModel
+      .getIdUser(phone)
+      .then((result) => {
+        const topupCenter = 1; //hardcoded
+        const myId = result.data;
+        console.log(myId);
+        Promise.all([
+          topupModel.insertTranfer(topupCenter, result.data, amount),
+          topupModel.topupBalance(result.data, amount),
+        ])
+          .then((result) => {
+            if (
+              global.io
+                .to(myId)
+                .emit(
+                  "transfer in",
+                  `Top Up sebesar Rp.${amount} Berhasil`,
+                  amount
+                )
+            ) {
+              console.log("sukses");
+            }
+            console.log(myId);
+            res.status(result[1].status).json({
+              ...result[1],
+              message: `Saldo ${phone} bertambah Rp.${amount}`,
+            });
+          })
+          .catch((error) => {
+            res.status(error.status).json(error);
+          });
+      })
+      .catch((error) => {
+        res.status(error.status).json(error);
+      });
+  },
+};
+>>>>>>> c9e8ac69276e38f43764544b2c9fbacba53bba0a

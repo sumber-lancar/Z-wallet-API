@@ -23,7 +23,7 @@ io.on("connection", (socket) => {
   //   console.log(msg)
   //   io.to(id_recipient).to(id).emit("chat message", msg);
   // });
-  socket.on("transfer", (amount, sender, recipient) => {
+  socket.on("transfer", (amount, sender, sender_name, recipient) => {
     console.log("sender = " + sender);
     console.log("recipient = " + recipient);
     console.log("amount = " + amount);
@@ -33,7 +33,7 @@ io.on("connection", (socket) => {
     );
     io.to(recipient).emit(
       "transfer in",
-      `${sender} mengirim dana sebesar ${amount}`,
+      `${sender_name} mengirim dana sebesar ${amount}`,
       amount
     );
     //----
