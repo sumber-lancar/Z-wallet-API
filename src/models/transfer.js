@@ -135,13 +135,13 @@ module.exports = {
             })
         })
     },
-    getTranferDetails: (id) => {
+    getDetailTransfer: (id) => {
         return new Promise((resolve, reject) => {
             const queryStr =
                 `SELECT t.id,t.sender as sender_id, CONCAT(u.firstname,' ',u.lastname) as sender,u.phone as sender_phone, u.photo as sender_photo, t.receiver as receiver_id, CONCAT(us.firstname,' ', us.lastname) as receiver,us.phone as receiver_phone, us.photo as receiver_photo, t.amount,t.notes, t.type, t.created_at
             FROM transfer t
-            JOIN tb_user u ON u.id = t.sender
-            JOIN tb_user us ON us.id = t.receiver
+            JOIN users u ON u.id = t.sender
+            JOIN users us ON us.id = t.receiver
             WHERE t.id = ?`
             db.query(queryStr, id, (err, data) => {
                 if (!err) {
