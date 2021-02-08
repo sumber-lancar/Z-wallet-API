@@ -57,7 +57,7 @@ Built with Node js, using ExpressJs framework and other libraries.
 
 1. Open your terminal or command prompt
 
-2. Type `https://github.com/sumber-lancar/Z-wallet-API.git`
+2. Type `git clone https://github.com/sumber-lancar/Z-wallet-API.git`
 
 3. Open the folder and type `npm install` for install dependencies
 
