@@ -130,21 +130,6 @@ SECRET_KEY='ZwAllEt'
 
   
 
-| No. | Method | Endpoint |
-
-| :-: | :----: | :----------------: |
-
-| 1 | POST | /auth/registration |
-
-| | | /auth/login |
-
-| | | /auth/validate |
-
-| | | /auth/reset |
-
-| 2 | GET | /auth/user/:id |
-
-| 3 | PATCH | /auth/update/:id |
 
   
 
@@ -152,11 +137,7 @@ SECRET_KEY='ZwAllEt'
 
   
 
-| No. | Method | Endpoint |
 
-| :-: | :----: | :------: |
-
-| 1 | GET | /contact |
 
   
 
@@ -164,13 +145,7 @@ SECRET_KEY='ZwAllEt'
 
   
 
-| No. | Method | Endpoint |
 
-| :-: | :----: | :--------------: |
-
-
-
-| 1 | GET | /transaction/:id |
 
   
 
