@@ -29,7 +29,7 @@ Express.js is a web application framework for Node.js.</p>
 
 This is RESTful api design for
 
-[`Zwallet App frontend`](https://github.com/solehudin5699/ZWALLET-frontend.git).
+[`Zwallet App frontend`](https://github.com/sumber-lancar/Z-wallet-RN).
 
 Built with Node js, using ExpressJs framework and other libraries.
 
