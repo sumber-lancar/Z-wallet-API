@@ -157,7 +157,7 @@ Check out the documentation here for your convenience.
 
   
 
-<a  href="https://documenter.getpostman.com/view/11765677/TVYNYvQ5">
+<a  href="https://documenter.getpostman.com/view/13530339/TW6xoU7C">
 
 <img  src="https://img.shields.io/badge/Documentation-POSTMAN-blue.svg?style=popout&logo=postman"/>
 
